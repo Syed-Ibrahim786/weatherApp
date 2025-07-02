@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather App</title>
+    <style>
+
+
+        *{
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: poppins,sans-serif;
+            
+        }
+        body{
+            background: url(weatherbackground.png) no-repeat center fixed;
+            background-size: cover;
+        }
+        .card{
+            /* background:rgba(12, 12, 12, 0.2); */
+            background-color: white;
+
+            display:flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            width:90%;
+            max-width: 470px;
+            
+            border-radius: 20px;
+            margin:100px auto;
+        }
+        
+        .search{
+            
+           
+            margin-top: 10px;
+            margin-bottom:10px;
+            display:flex;
+            justify-content: space-between;
+            align-items: center;
+            width:90%;
+            
+            border-radius: 10px;
+            
+        }
+        #bar{
+            height: auto;
+            color: #555;
+            font-size: 18px;
+            border-radius: 30px;
+            width: 80%;
+            padding:10px 25px;
+            margin-right:16px;
+            outline: none;
+            border: none;
+            
+            border: 2px solid rgba(82, 136, 157, 0.771);
+        
+            
+        }
+        .search button{
+            border-radius: 50%;
+            background-color: transparent;
+            border: none;
+            outline: 0;
+            background: white;
+            cursor: pointer;
+            &:hover{
+                border: 1px solid black;
+            }
+            
+        }
+        .searchicon{
+            height: 60px;
+            width:60px;
+            border-radius: 50%;
+            shape-outside: circle(70%);
+            
+        }
+        .weather-part{
+            width:90%;
+            margin:0;
+            padding-bottom: 20px;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            flex-direction: column;
+            
+        }
+       .weather-part img,h1,h2{
+        margin: 0;
+    
+       }
+       .weather-part h1{
+        font-size: 50px;
+        font-weight: 500;
+       }
+       .weather-part h2{
+        font-size: 20px;
+        font-weight: 400;
+       }
+
+       .extrainfo{
+        margin-top: 20px;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        width: 90%;
+        color: black;
+       }
+       .humidity{
+        display: flex;
+        justify-content: space-between;
+        
+       }
+       .wind-speed{
+        display: flex;
+        justify-content: space-between;
+       }
+       .huminfo{
+        
+        height: 50px;
+        align-self: center;
+        margin-left:10px;
+       }
+       .huminfo h2,p{
+        margin:0;
+       }
+       .weather-part{
+        display:none;
+       }
+       
+       .temp,.city{
+        color:black;
+       }
+       .error{
+        color:red;
+        font-weight: 600;
+        
+        align-self: flex-start;
+        margin-bottom: 10px;
+        margin-left: 20px;
+       
+       }
+
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="search">
+            <input type="search" spellcheck="false" placeholder="enter your location" id = "bar">
+            <button ><img class = "searchicon"src="searchicon.png"></button>
+            
+        </div>
+        <p class="error"></p>
+        <div class="weather-part">
+            <img src="cloudy.png" style="width: 170px;">
+            <h1 class = "temp">18°C</h1>
+            <h2 class = "city">BROKEN CLOUDS</h2>
+            <div class="extrainfo">
+
+                <div class="humidity">
+                    <img src="humidity.png" style="height:80px; width:80px;;">
+                    <div class="huminfo">
+                        <h2 class = "hum">55%</h2>
+                        <p>Humidity</p>
+                    </div>
+                </div>
+    
+    
+                <div class="wind-speed">
+                    <img src="windspeed.png" style="height: 80px; width:80px;">
+                    <div class="huminfo">
+                        <h2 class = "windspeed">0Km/h</h2>
+                        <p>Wind Speed</p>
+                    </div>
+                </div>
+    
+    
+            </div>
+        </div>
+
+
+        
+    </div>
+    <script>
+
+        const searchbox = document.querySelector("#bar");
+        
+        const searchicon = document.querySelector(".searchicon");
+
+        const error = document.querySelector(".error")
+        const apiurl = "https://api.openweathermap.org/data/2.5/weather?&appid=b33d014625b92d9809001b441b54b9a2&units=metric&q=";
+
+        
+
+
+        
+        async function weatherapi(city) {
+            
+            const response = await fetch(apiurl +city);
+            let data = await response.json();
+            console.log(data);
+            if(data.cod === "404"){
+                console.log("error")
+                error.innerHTML = data.message
+            }
+            else{
+                error.innerHTML = ""
+                document.querySelector(".temp").innerHTML = Math.round(data.main.temp) + '°C';
+            document.querySelector(".city").innerHTML = searchbox.value;
+            document.querySelector(".hum").innerHTML = data.main.humidity + "%";
+            document.querySelector(".windspeed").innerHTML = data.wind.speed + "Km/h";
+            document.querySelector(".weather-part").style.display = "flex";
+            }
+            
+            
+        }
+        searchbox.addEventListener("search" , ()=>{
+            weatherapi(searchbox.value);
+        })
+        
+        searchicon.addEventListener("click" , ()=>{
+            weatherapi(searchbox.value);
+        })
+
+        searchbox.addEventListener("input" , ()=>{
+            document.querySelector(".weather-part").style.display = "none";
+        })
+           
+    </script>
+</body>
+</html>
